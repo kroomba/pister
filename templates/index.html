@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        /* Add your CSS styling here */
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat"></div>
+        <input type="text" id="user-input">
+        <button id="send-btn">Send</button>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $("#send-btn").click(function() {
+                sendMessage();
+            });
+
+            $("#user-input").keypress(function(event) {
+                if (event.which == 13) {
+                    sendMessage();
+                }
+            });
+
+            function sendMessage() {
+                var message = $("#user-input").val();
+                $("#user-input").val("");
+
+                $.ajax({
+                    type: "POST",
+                    url: "/ask",
+                    contentType: "application/json",
+                    data: JSON.stringify({ message: message }),
+                    success: function(response) {
+                        displayMessage("You: " + message, "blue");
+                        displayMessage("Bot: " + response.message, "red");
+                    }
+                });
+            }
+
+            function displayMessage(message, color) {
+                $("#chat").append("<p style='color: " + color + "'>" + message + "</p>");
+            }
+        });
+    </script>
+</body>
+</html>
